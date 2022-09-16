@@ -4,7 +4,7 @@
   "description": "CBv5 API Automation Tests",
   "main": "index.js",
   "scripts": {
-    "postman": "newman run postman/  -e postman/"
+    "postman": "newman run postman/CBv5_Base.postman_collection.json  -e postman/CBv5_test.postman_environment.json"
   },
   "keywords": [],
   "author": "JS-Collaboration Group",

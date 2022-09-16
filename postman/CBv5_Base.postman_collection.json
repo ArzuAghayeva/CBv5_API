@@ -1,0 +1,1627 @@
+{
+	"info": {
+		"_postman_id": "af81e7a4-57f2-4f12-939f-892498f1d683",
+		"name": "CBv5_Base",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20201535"
+	},
+	"item": [
+		{
+			"name": "001 B01 Registration",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"const req = JSON.parse(pm.request.body)\r",
+							"\r",
+							"\r",
+							"pm.test('B01 Status code is 201', function(){\r",
+							"    pm.expect(pm.response.to.have.status(201))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"B01 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).includes('User created successfully');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"B01 Response success property is true\", function () {\r",
+							"    pm.expect(res.success).to.eq(true)\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"companyName\": \"{{$randomCompanyName}}\",\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\",\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"Pirate666!\",\r\n    \"version\": \"v5\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/user",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "003 B03 GetAllUsers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"\r",
+							"pm.test('B03 Response status is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test('B03 Response contains users array', function(){\r",
+							"    pm.expect(res.items).to.be.an('array').to.have.lengthOf.above(0)})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"limit\": \"100\",\r\n    \"page\": \"1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/user/search",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"user",
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "004 B04 GetUserByID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"\r",
+							"pm.test('B04 Response status is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test('B04 Response has correct message', function(){\r",
+							"    pm.expect(res.message).to.equal('User found')\r",
+							"})\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/user/63214bcdba36b3c97c98ac1a",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"user",
+						"63214bcdba36b3c97c98ac1a"
+					],
+					"query": [
+						{
+							"key": "userid",
+							"value": "63214bcdba36b3c97c98ac1a",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "005 B05 Authorisation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"token\", pm.response.json().payload.token);\r",
+							"const res = pm.response.json()\r",
+							"const req = JSON.parse(pm.request.body)\r",
+							"\r",
+							"pm.test('B05 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"B05 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('Auth success');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"B05 Response has a token\", function () {\r",
+							"    pm.expect(res.payload.token).to.be.not.empty\r",
+							"});\r",
+							"\r",
+							"pm.test(\"B05 Response does not contain password\", function () {\r",
+							"    pm.expect(res).to.not.have.property('password')\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": {{email}},\r\n    \"password\": {{password}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/user/login",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "006 C01 CreateClient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"const req = JSON.parse(pm.request.body)\r",
+							"\r",
+							"pm.test('C01 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"C01 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('Client created');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"C01 Response has a clientid\", function () {\r",
+							"    pm.expect(res.payload).to.be.a('string')\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"{{$randomFullName}}\",\r\n    \"phone\": \"{{$randomPhoneNumber}}\",\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"notes\": \"{{$randomLoremSentence}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/client",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"client"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "007 C02 GetAllClients",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"const clients = pm.response.json().payload.items\r",
+							"pm.environment.set(\"clientid\", clients[0]._id);\r",
+							"pm.environment.set(\"client_delete\", clients[clients.length-1]._id);\r",
+							"\r",
+							"pm.test('C02 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"C02 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('ClientSearch ok')\r",
+							"})\r",
+							"\r",
+							"pm.test(\"C02 Response has a clientid\", function () {\r",
+							"    pm.expect(res.payload.items).to.be.an('array').to.have.lengthOf.above(0)\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/client/search",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"client",
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "008 C03 GetClientByID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"pm.environment.set('client_name', pm.response.json().payload.name)\r",
+							"\r",
+							"pm.test('C03 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"C03 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('Get Client by id ok');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"C03 Response has a clientid\", function () {\r",
+							"    pm.expect(res.payload._id).to.be.a('string')\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/client/{{clientid}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"client",
+						"{{clientid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "010 009 C04 GetClientByName",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"\r",
+							"pm.test('C04 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"C04 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('ClientSearch ok');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"C04 Response has a clientid\", function () {\r",
+							"    pm.expect(res.payload.items).to.be.an('array').to.have.lengthOf.above(0)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"limit\": \"20\",\r\n    \"page\": \"1\",\r\n    \"name\": \"{{client_name}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/client/search",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"client",
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "011 C05 UpdateClient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"const req = JSON.parse(pm.request.body)\r",
+							"\r",
+							"pm.test('C05 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"C05 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('Client updated');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"{{$randomFullName}}\",\r\n    \"phone\": \"{{$randomPhoneNumber}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/client/{{clientid}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"client",
+						"{{clientid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "012 C06 DeleteClient",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"\r",
+							"pm.test('C06 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"C06 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('Client deleted');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/client/{{client_delete}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"client",
+						"{{client_delete}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "013 V01 CreateVendor",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"const req = JSON.parse(pm.request.body)\r",
+							"\r",
+							"pm.test('V01 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"V01 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('Vendor created');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"V01 Response has a clientid\", function () {\r",
+							"    pm.expect(res.payload).to.be.a('string')\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"{{$randomFullName}}\",\r\n    \"phone\": \"{{$randomPhoneNumber}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/vendor",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"vendor"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "014 V02 GetAllVendors",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"const vendors = pm.response.json().payload.items\r",
+							"pm.environment.set(\"vendorid\", vendors[0]._id);\r",
+							"pm.environment.set(\"vendor_delete\", vendors[vendors.length-1]._id);\r",
+							"\r",
+							"pm.test('V02 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"V02 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('VendorSearch ok')\r",
+							"})\r",
+							"\r",
+							"pm.test(\"V02 Response has a clientid\", function () {\r",
+							"    pm.expect(res.payload.items).to.be.an('array').to.have.lengthOf.above(0)\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/vendor/search",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"vendor",
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "015 V03 GetVendorByID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"pm.environment.set('vendor_name', pm.response.json().payload.name)\r",
+							"\r",
+							"pm.test('V03 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"V03 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('Get Vendor by id ok');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"V03 Response has a clientid\", function () {\r",
+							"    pm.expect(res.payload._id).to.be.a('string')\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/vendor/{{vendorid}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"vendor",
+						"{{vendorid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "016 V04 GetVendorByName",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"\r",
+							"pm.test('V04 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"V04 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('VendorSearch ok');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"V04 Response has a vendorid\", function () {\r",
+							"      pm.expect(res.payload.items).to.be.an('array').to.have.lengthOf.above(0)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"limit\": \"20\",\r\n    \"page\": \"1\",\r\n    \"name\": \"{{vendor_name}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/vendor/search",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"vendor",
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "017 V05 UpdateVendor",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"const req = JSON.parse(pm.request.body)\r",
+							"\r",
+							"pm.test('V05 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"V05 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('Vendor updated');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"{{$randomFullName}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/vendor/{{vendorid}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"vendor",
+						"{{vendorid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "018 V06 DeleteVendor",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"\r",
+							"pm.test('V06 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"V06 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('Vendor deleted');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/vendor/{{vendor_delete}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"vendor",
+						"{{vendor_delete}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "019 S01 CreateService",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"const req = JSON.parse(pm.request.body)\r",
+							"\r",
+							"pm.test('S01 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"S01 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('Service created');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"S01 Response has a clientid\", function () {\r",
+							"    pm.expect(res.payload).to.be.a('string')\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"{{$randomWord}}\",\r\n    \"vendor\": \"{{vendorid}}\",\r\n    \"vendorPrice\": \"222\",\r\n    \"clientPrice\": \"444\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/service",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"service"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "020 S02 GetAllServices",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"const services = pm.response.json().payload.items\r",
+							"pm.environment.set(\"serviceid\", services[0]._id);\r",
+							"pm.environment.set(\"service_delete\", services[services.length-1]._id);\r",
+							"\r",
+							"pm.test('S02 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"S02 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('Service Search ok')\r",
+							"})\r",
+							"\r",
+							"pm.test(\"S02 Response has a clientid\", function () {\r",
+							"    pm.expect(res.payload.items).to.be.an('array').to.have.lengthOf.above(0)\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/service/search",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"service",
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "021 S03 GetServiceByID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"pm.environment.set('service_name', pm.response.json().payload.name)\r",
+							"\r",
+							"pm.test('V02 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"V02 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('Get Service by id ok');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"V02 Response has a clientid\", function () {\r",
+							"    pm.expect(res.payload._id).to.be.a('string')\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/service/{{serviceid}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"service",
+						"{{serviceid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "022 S04 GetServiceByName",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"\r",
+							"pm.test('S04 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"S04 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('Service Search ok');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"S04 Response has a serviceid\", function () {\r",
+							"pm.expect(res.payload.items).to.be.an('array').to.have.lengthOf.above(0)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"limit\": \"20\",\r\n    \"page\": \"1\",\r\n    \"name\": \"{{service_name}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/service/search",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"service",
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "023 C05 UpdateService",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"const req = JSON.parse(pm.request.body)\r",
+							"\r",
+							"pm.test('C05 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"C05 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('Service updated');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"clientPrice\": \"777\",\r\n    \"service\": \"{{serviceid}}\",\r\n    \"vendor\": \"{{vendorid}}\",\r\n    \"vendorPrice\": \"666\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/service/{{serviceid}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"service",
+						"{{serviceid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "024 S06 DeleteService",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"\r",
+							"pm.test('S06 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"S06 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('Service deleted');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/service/{{service_delete}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"service",
+						"{{service_delete}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "025 O01 CreateOrder",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"const req = JSON.parse(pm.request.body)\r",
+							"\r",
+							"pm.test('O01 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"O01 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('Order created');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"O01 Response has a orderid\", function () {\r",
+							"    pm.expect(res.payload).to.be.a('string')\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"client\": \"{{clientid}}\",\r\n    \"service\": \"{{serviceid}}\",\r\n    \"clientPrice\": \"666\",\r\n    \"clientPaid\": \"666\",\r\n    \"vendorPrice\": \"222\",\r\n    \"vendorPaid\": \"222\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/order",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"order"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "026 O02 GetAllOrders",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"const orders = pm.response.json().payload.items\r",
+							"pm.environment.set(\"orderid\", orders[0]._id);\r",
+							"pm.environment.set(\"order_delete\", orders[orders.length-1]._id);\r",
+							"\r",
+							"pm.test('O02 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"O02 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('OrderSearch ok')\r",
+							"})\r",
+							"\r",
+							"pm.test(\"O02 Response has a clientid\", function () {\r",
+							"    pm.expect(res.payload.items).to.be.an('array').to.have.lengthOf.above(0)\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/order/search",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"order",
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "027 O03 GetOrderByID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"pm.environment.set('order_name', pm.response.json().payload.name)\r",
+							"\r",
+							"pm.test('O02 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"O02 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('Get Order by id ok');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"O02 Response has a clientid\", function () {\r",
+							"    pm.expect(res.payload._id).to.be.a('string')\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/order/{{orderid}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"order",
+						"{{orderid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "028 O04 GetOrderByName",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"\r",
+							"pm.test('O04 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"O04 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('OrderSearch ok');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"O04 Response has a orderid\", function () {\r",
+							"pm.expect(res.payload.items).to.be.an('array').to.have.lengthOf.above(0)\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"limit\": \"20\",\r\n    \"page\": \"1\",\r\n    \"name\": \"{{order_name}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/order/search",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"order",
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "029 O05 UpdateOrder",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"const req = JSON.parse(pm.request.body)\r",
+							"\r",
+							"pm.test('O05 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"O05 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('Order updated');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"client\": \"{{clientid}}\",\r\n    \"clientPaid\": \"666\",\r\n    \"clientPrice\": \"666\",\r\n    \"service\": \"{{serviceid}}\",\r\n    \"vendorPaid\": \"666\",\r\n    \"vendorPrice\": \"666\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/order/{{orderid}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"order",
+						"{{orderid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "030 O06 DeleteOrder",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"\r",
+							"pm.test('O06 Status code is 200', function(){\r",
+							"    pm.expect(pm.response.to.have.status(200))\r",
+							"})\r",
+							"\r",
+							"pm.test(\"O06 Response has a correct message\", function () {\r",
+							"    pm.expect(res.message).to.eq('Order deleted');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/order/{{order_delete}}",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"order",
+						"{{order_delete}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

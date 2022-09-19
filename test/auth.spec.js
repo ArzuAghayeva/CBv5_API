@@ -4,7 +4,7 @@ const {expect} = require('chai')
 describe('Authentication', function () {
     describe('Login with valid credentials', function () {
         it('Successful Login status code', async function () {
-            const response = await axios.post('https://clientbase-server.herokuapp.com/v5/user/login', {
+            const response =    await axios.post('https://clientbase-server.herokuapp.com/v5/user/login', {
                 email: 'jacksparrow@pirate.com',
                 password: 'Pirate666!'
             })

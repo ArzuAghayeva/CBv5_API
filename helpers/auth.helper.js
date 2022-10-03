@@ -1,6 +1,6 @@
 const axios = require('axios')
 
-export default class AuthHelper {        //export is not working. FIND REPLACEMENT!!!
+class AuthHelper {        //export is not working. FIND REPLACEMENT!!!
     response
 
     async login(email, password){
@@ -13,3 +13,4 @@ export default class AuthHelper {        //export is not working. FIND REPLACEME
         return this.response
     }
 }
+export default new AuthHelper()

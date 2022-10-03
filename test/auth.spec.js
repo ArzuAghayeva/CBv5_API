@@ -28,7 +28,7 @@ describe('Authentication', function () {
     })
 
     describe('Login with invalid credentials', function () {
-        it.only('Unsuccessful Login status code', async function () {
+        it('Unsuccessful Login status code', async function () {
             const error = await axios.post('https://clientbase-server.herokuapp.com/v5/user/login', {
                 email: 'test@test.com',
                 password: 'Test123'
